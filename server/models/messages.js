@@ -1,11 +1,22 @@
 var { db } = require('../db');
 
 module.exports = {
-  getAll: function () {
+  getAll: function (callback) {
     db.query('SELECT * from messages', (err, data) => {
-      console.log(data);
+      if(err) {
+        callback(err);
+      } else {
+        callback(null, data);
+      }
     });
   }, // a function which produces all the messages
-  create: function () {} // a function which can be used to insert a message into the database
+  create: function (message, callback) {
+    db.query('INSERT INTO messages (message, username, roomname, user_id) VALUES (?, ?, ?, ?)', [message.message, message.username, message.roomname, 1], (err, data) => {
+      if(err) {
+        callback(err);
+      } else {
+        callback(null, data);
+      }
+    });
+  } // a function which can be used to insert a message into the database
 };
-module.exports.getAll();

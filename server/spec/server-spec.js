@@ -33,7 +33,7 @@ describe('Persistent Node Chat Server', () => {
     const message = 'In mercy\'s name, three days is all I need.';
     const roomname = 'Hello';
     // Create a user on the chat server database.
-    axios.post(`${API_URL}/users`, { username })
+    axios.post(`${API_URL}/users`, { name: username })
       .then(() => {
         // Post a message to the node chat server:
         return axios.post(`${API_URL}/messages`, { username, message, roomname });
@@ -54,7 +54,7 @@ describe('Persistent Node Chat Server', () => {
           expect(results.length).toEqual(1);
 
           // TODO: If you don't have a column named text, change this test.
-          expect(results[0].message_text).toEqual(message);
+          expect(results[0].message).toEqual(message);
           done();
         });
       })
@@ -64,11 +64,12 @@ describe('Persistent Node Chat Server', () => {
   });
 
   it('Should output all messages from the DB', (done) => {
-    const message = 'In mercy\'s name, three days is all I need.';
-    const roomname = 'Hello';
+    const username = 'Homer';
+    const message = 'I like pie';
+    const roomname = 'lobby';
     // Let's insert a message into the db
-       const queryString = 'insert into messages(message_text, username_id, roomname) VALUES (?, ?, ?)';
-       const queryArgs = [message, 1, roomname];
+       const queryString = 'insert into messages(message, username, roomname, user_id) VALUES (?, ?, ?, ?)';
+       const queryArgs = [message, username, roomname, 1];
     /* TODO: The exact query string and query args to use here
      * depend on the schema you design, so I'll leave them up to you. */
     dbConnection.query(queryString, queryArgs, (err) => {
@@ -80,8 +81,38 @@ describe('Persistent Node Chat Server', () => {
       axios.get(`${API_URL}/messages`)
         .then((response) => {
           const messageLog = response.data;
-          expect(messageLog[0].message_text).toEqual(message);
-          expect(messageLog[0].roomname).toEqual(roomname);
+          expect(messageLog[1].message).toEqual(message);
+          expect(messageLog[1].roomname).toEqual(roomname);
+          done();
+        })
+        .catch((err) => {
+          throw err;
+        });
+    });
+  });
+  it('Should have unique IDs for each message', (done) => {
+    const username = 'Kyle';
+    const message = 'Pizza is the most versatile food in the world';
+    const roomname = 'newroom';
+    // Let's insert a message into the db
+       const queryString = 'insert into messages(message, username, roomname, user_id) VALUES (?, ?, ?, ?)';
+       const queryArgs = [message, username, roomname, 1];
+    /* TODO: The exact query string and query args to use here
+     * depend on the schema you design, so I'll leave them up to you. */
+
+
+    dbConnection.query(queryString, queryArgs, (err) => {
+      if (err) {
+        throw err;
+      }
+
+      // Now query the Node chat server and see if it returns the message we just inserted:
+      axios.get(`${API_URL}/messages`)
+        .then((response) => {
+          const messageLog = response.data;
+          expect(messageLog[0].ID).toEqual(1);
+          expect(messageLog[1].ID).toEqual(2);
+          expect(messageLog[2].ID).toEqual(3);
           done();
         })
         .catch((err) => {
