@@ -28,7 +28,7 @@ var db = new Sequelize('chat', 'root', '', {
 });
 
 db.authenticate()
-  .then(()=>console.log('Database connected'))
+  .then(() => console.log('Database connected'))
   .catch((err) => console.error(err));
 
 exports.db = db;

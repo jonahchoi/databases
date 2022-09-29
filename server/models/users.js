@@ -1,22 +1,31 @@
 var { db } = require('../db');
 
+var Sequelize = require('sequelize');
+var User = db.define('User', {
+  name: Sequelize.STRING
+});
+
 module.exports = {
   getAll: function (callback) {
-    db.query('SELECT * from users', (err, data) => {
-      if(err) {
-        callback(err);
-      } else {
-        callback(null, data);
-      }
-    });
+    return User.sync()
+      .then(() => {
+        return User.findAll();
+        db.close();
+      })
+      .catch((err) => {
+        console.error(err);
+        db.close();
+      })
   },
-  create: function (user, callback) {
-    db.query('INSERT INTO users (name) VALUES (?)', [user.name], (err, data) => {
-      if(err) {
-        callback(err);
-      } else {
-        callback(null, data);
-      }
-    });
+  create: function (user) {
+    return User.sync()
+      .then(() => {
+        return User.create(user);
+        db.close();
+      })
+      .catch((err) => {
+        console.log(err);
+        db.close();
+      })
   }
 };
