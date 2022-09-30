@@ -4,7 +4,9 @@ module.exports = {
   get: function (req, res) {
     models.messages.getAll()
       .then((data) => {
-        res.status(200).send(JSON.stringify(data));
+        // res.setHeader('Content-Type', 'application/json');
+        // console.log(JSON.stringify(data));
+        res.status(200).json(data);
       })
       .catch((err) => {
         console.error(err);
@@ -14,7 +16,7 @@ module.exports = {
   post: function (req, res) {
     models.messages.create(req.body)
       .then((data) => {
-        res.sendStatus(201);
+        res.status(201).json(data);
       })
       .catch((err) => {
         console.error(err);

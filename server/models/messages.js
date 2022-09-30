@@ -10,8 +10,8 @@ var Message = db.define('Message', {
 module.exports = {
   getAll: function (callback) {
     return Message.sync()
-      .then(() => {
-        return Message.findAll();
+    .then(() => {
+        return Message.findAll({raw: true});
         db.close();
       })
       .catch((err) => {
@@ -23,6 +23,9 @@ module.exports = {
     return Message.sync()
       .then(() => {
         return Message.create(message);
+      })
+      .then(() => {
+        return Message.findAll({raw: true});
         db.close();
       })
       .catch((err) => {

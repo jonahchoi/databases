@@ -32,11 +32,12 @@ describe('Persistent Node Chat Server', () => {
     const username = 'Valjean';
     const message = 'In mercy\'s name, three days is all I need.';
     const roomname = 'Hello';
+    const user_id = 1;
     // Create a user on the chat server database.
     axios.post(`${API_URL}/users`, { name: username })
       .then(() => {
         // Post a message to the node chat server:
-        return axios.post(`${API_URL}/messages`, { username, message, roomname });
+        return axios.post(`${API_URL}/messages`, { username, message, roomname, user_id });
       })
       .then(() => {
         // Now if we look in the database, we should find the posted message there.

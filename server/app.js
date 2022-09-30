@@ -20,7 +20,6 @@ app.use(cors());
 app.use(express.json());
 
 // Set up our routes
-// app.post('/classes/messages', () => console.log('balhblah'))
 app.use('/classes', router);
 
 // Serve the client files

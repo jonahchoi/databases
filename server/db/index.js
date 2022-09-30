@@ -24,7 +24,10 @@ db.connect(function(err) {
 var Sequelize = require('sequelize');
 var db = new Sequelize('chat', 'root', '', {
   host: 'localhost',
-  dialect: 'mysql'
+  dialect: 'mysql',
+  dialectOptions: {
+    autoJsonMap: false,
+  }
 });
 
 db.authenticate()
